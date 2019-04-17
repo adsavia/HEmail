@@ -45,14 +45,14 @@ Hubitat HE hub with the custom HEmail device added to the "Drivers Code" section
 - Cut and paste it into a new device in the drivers code section on your HE. Save
 - Add new device, select "HEmail" device. Label something like "HEmail-MyEmail" or "HEmail-MyPhone", save.
 - Fill in the required preferences
---	"Email Server"		- SMTP Server with plain authentication (SSL/TLS will NOT work)
---	"Email Domain"		- yourdomain.com
---	"Email User"		- youruser / youruser@yourdomain.com
---	"Email Password"	- youruserpassword
---	"Port #" 			- OPTIONAL, default is 25
---	"From" 				- youruser@yourdomain.com
---	"To" 				- somebody@tosendthisto.com
---	"Subject" 			- some subject like "HE Notification Alert".
+  - "Email Server"		- SMTP Server with plain authentication (SSL/TLS will NOT work)
+  - "Email Domain"		- yourdomain.com
+  - "Email User"		- youruser / youruser@yourdomain.com
+  - "Email Password"	- youruserpassword
+  - "Port #" 			- OPTIONAL, default is 25
+  - "From" 				- youruser@yourdomain.com
+  - "To" 				- somebody@tosendthisto.com
+  - "Subject" 			- some subject like "HE Notification Alert".
 - Save preferences.
 - To test enter a test message in "Device Notification" and click on the 
 Device Notification header. If everything is working you should recieve an 
