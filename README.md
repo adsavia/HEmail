@@ -27,8 +27,8 @@ Phone provider offers an email to text email address. Note: most US providers DO
 ###### C-Spire: {cell number}@cspire1.com
 ###### Page Plus: {cell number}@vtext.com
 #########################################################
-#### The system works by installing by a custom device that communicates with a NodeJS via a REST call.
-#### The server parses the request and sends it out via "sendmail".
+#### The system works by installing by a custom device that 
+#### communicates with an smtp server via telnet..
 #########################################################
 
 ##### Notes:
