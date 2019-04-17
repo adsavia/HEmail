@@ -31,6 +31,10 @@ Phone provider offers an email to text email address. Note: most US providers DO
 #### The server parses the request and sends it out via "sendmail".
 #########################################################
 
+##### Notes:
+1) THIS WILL NOT WORK WITH GMAIL or other providers that require SSL/TLS!!!!!
+2) One hard coded device per contact(s).
+
 ##### Requirements:
 
 Hubitat HE hub with the custom HEmail device added to the "Drivers Code" section.
@@ -39,8 +43,6 @@ Hubitat HE hub with the custom HEmail device added to the "Drivers Code" section
 
 - From github view raw format for the https://github.com/adsavia/Hubitat-DoNS/blob/master/HE_Driver/DoNS-Email.groovy
 - Cut and paste it into a new device in the drivers code section on your HE. Save
-
-1) Hard coded device per contact(s).
 - Add new device, select "HEmail" device. Label something like "HEmail-MyEmail" or "HEmail-MyPhone", save.
 - Fill in the required preferences
 	"Email Server"		- SMTP Server with plain authentication (SSL/TLS will NOT work)
