@@ -26,7 +26,7 @@
 *
 *
 */
-def version() {"v0.5.0"}
+def version() {"v0.99"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -45,7 +45,7 @@ metadata {
         capability "Notification"
         capability "Actuator"
 		capability "Telnet"
-		attribute "Telnet", ""
+		//attribute "Telnet", ""
     }
 }
 
@@ -76,7 +76,6 @@ def deviceNotification(message) {
 	//telnetConnect([termChars:[13,10]],EmailServer, EmailPort.toInteger(), null, null)
 	telnetClose()
 	telnetConnect(EmailServer, EmailPort.toInteger(), null, null)
-
 }
 
 def sendMsg(String msg) {
@@ -88,7 +87,9 @@ def parse(String msg) {
 	
 	logDebug("parse ${msg}")
 
-	seqSend(220, msg, ["ehlo ${EmailDomain}"],"Connected to email server!",false)
+	if (seqSend(220, msg, ["ehlo ${EmailDomain}"],"Connected to email server!",false)) {
+		sendEvent([name: "telnet", value: "Connected."])
+	}
 
 	def auth = "\u0000${EmailUser}\u0000${EmailPwd}"
 	String encoded = auth.bytes.encodeBase64().toString()
@@ -108,13 +109,15 @@ def parse(String msg) {
 	]
 	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",true)) {
 		logDebug("Email message sent!")
+		sendEvent([name: "telnet", value: "Disconnected, email sent."])
+		telnetClose()
 	}
 	
 	if ( msg != state.lastMsg){
 		logDebug("setting state.lastMsg to ${msg}")
 		state.lastMsg = "${msg}"
 	}
-	sendEvent([name: "telnet", value: "${msg}"])
+	//sendEvent([name: "telnet", value: "${msg}"])
 }
 
 def telnetStatus(status) {
@@ -122,12 +125,12 @@ def telnetStatus(status) {
 	if (status == "receive error: Stream is closed" || status == "send error: Broken pipe (Write failed)") {
 		logDebug("Stream is closed")
 		try {
-        	sendEvent([name: "telnet", value: "Disconnected"])
+        	sendEvent([name: "telnet", value: "Disconnected. ${status}"])
 		} catch(e) {
 			logDebug(e)
 		}
 		telnetClose()
-    }	
+    }
 }
 
 boolean seqSend(int currCode, msg, msgs, dbgMsg, closeTelnet) {
