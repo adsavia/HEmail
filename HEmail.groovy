@@ -111,10 +111,9 @@ def parse(String msg) {
 			, "From: ${From}"
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
-			//, ""
 			, "${state.EmailBody}"
 			, "."
-			//, ""
+			, "quit"
 	]
 	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",true)) {
 		logDebug("Email message sent!")
