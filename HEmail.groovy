@@ -86,7 +86,7 @@ def sendMsg(String msg) {
 
 def parse(String msg) {
 	
-    logDebug("parse ${msg}")
+	logDebug("parse ${msg}")
 
 	seqSend(220, msg, ["ehlo ${EmailDomain}"],"Connected to email server!",false)
 
