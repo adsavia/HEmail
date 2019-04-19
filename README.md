@@ -41,7 +41,7 @@ Hubitat HE hub with the custom HEmail device added to the "Drivers Code" section
 
 #########################################################
 
-- From github view raw format for the https://github.com/adsavia/Hubitat-DoNS/blob/master/HE_Driver/DoNS-Email.groovy
+- From github view raw format for the https://github.com/adsavia/HEmail/raw/master/HEmail.groovy
 - Cut and paste it into a new device in the drivers code section on your HE. Save
 - Add new device, select "HEmail" device. Label something like "HEmail-MyEmail" or "HEmail-MyPhone", save.
 - Fill in the required preferences
