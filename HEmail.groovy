@@ -6,9 +6,10 @@
 *       Date    Time		Who		What
 *       v0.0.1	2019-04-15	13:38	Eric H	Initial creation of Telnet Email
 *       v0.5	2019-04-17	15:21	Eric H	Beta release, full functionality.
-*       v0.99	2019-04-19	15:21	Eric H	Created seqSend method to tighten up code a bit.
+*       v0.99	2019-04-19	10:30	Eric H	Created seqSend method to tighten up code a bit.
 *											, set email user name to required.
-*       v0.99.1	2019-04-19	15:21	Eric H	Modified telnet attribute to only show connect/disconnect
+*       v0.99.1	2019-04-19	11:00	Eric H	Modified telnet attribute to only show connect/disconnect
+*       v0.99.2	2019-04-19	15:13	Eric H	Fixed history log, removed extra blank sends, added delay to sendMsg.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -28,7 +29,7 @@
 *
 *
 */
-def version() {"v0.99.1"}
+def version() {"v0.99.3"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
