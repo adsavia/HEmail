@@ -3,7 +3,7 @@
 *   File: HEmail.groovy
 *   Platform: Hubitat
 *   Modification History:
-*       		Date        Time	Who		What
+*       Date    Time		Who		What
 *       v0.0.1	2019-04-15	13:38	Eric H	Initial creation of Telnet Email
 *       v0.5	2019-04-17	15:21	Eric H	Beta release, full functionality.
 *       v0.99	2019-04-19	15:21	Eric H	Created seqSend method to tighten up code a bit.
