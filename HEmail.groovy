@@ -6,6 +6,8 @@
 *       		Date        Time	Who		What
 *       v0.0.1	2019-04-15	13:38	Eric H	Initial creation of Telnet Email
 *       v0.5	2019-04-17	15:21	Eric H	Beta release, full functionality.
+*       v0.99	2019-04-19	15:21	Eric H	Created seqSend method to tighten up code a bit.
+*											, set email user name to required.
 *
 *  Copyright 2018 Eric Huebl
 *
@@ -29,7 +31,7 @@ def version() {"v0.5.0"}
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
 	input("EmailDomain", "text", title: "Email Domain:", description: "Enter domain (ex. domain.com)", required: true)
-	input("EmailUser", "text", title: "Email User:", description: "Enter email username", required: false)
+	input("EmailUser", "text", title: "Email User:", description: "Enter email username", required: true)
 	input("EmailPwd", "text", title: "Email Password:", description: "Enter email password", required: true)
 	input("EmailPort", "integer", title: "Port #:", description: "Enter port number, default 25", defaultValue: 25)
 	input("From", "text", title: "From:", description: "", required: true)
@@ -65,7 +67,7 @@ def initialize() {
 def deviceNotification(message) {
 
 	state.EmailBody = "${message}"
-
+	state.LastCode = 0
 	logDebug("Connecting to ${EmailServer}:${EmailPort}")
 	
 	//telnetConnect([terminalType: 'VT100',termChars:[13,10]],EmailServer, EmailPort.toInteger(), null, null)
@@ -86,43 +88,27 @@ def parse(String msg) {
 	
     logDebug("parse ${msg}")
 
-	
-	if (msg.startsWith("220")) {
-		logDebug("Connected!")
-		sendMsg("ehlo ${EmailDomain}")
-		state.LastCode = 220
-	}
+	seqSend(220, msg, ["ehlo ${EmailDomain}"],"Connected to email server!",false)
 
-	if (msg.startsWith("250")) {
-		if (state.LastCode != 250) {
-			logDebug("Domain Configured!")
-			state.LastCode = 250
-			def auth = "\u0000${EmailUser}\u0000${EmailPwd}"
-			String encoded = auth.bytes.encodeBase64().toString()
-			sendMsg("AUTH PLAIN ${encoded}")
-			state.LastCode = 250
-		}
-	}
-	if (msg.startsWith("235")) {
-		if (state.LastCode != 235) {
-			logDebug("Authentication Successful!")
+	def auth = "\u0000${EmailUser}\u0000${EmailPwd}"
+	String encoded = auth.bytes.encodeBase64().toString()
+	seqSend(250, msg, ["AUTH PLAIN ${encoded}"],"Domain Configured!",false)
 
-			logDebug("Sending email..")
-			def emlSubject = (Subject != null ? "${Subject}" : "")
-			sendMsg("MAIL FROM: ${From}")
-			sendMsg("RCPT TO: ${To}")
-			sendMsg("DATA")
-			sendMsg("From: ${From}")
-			sendMsg("To: ${To}")
-			sendMsg("Subject: ${emlSubject}")
-			sendMsg("${state.EmailBody}")
-			sendMsg(".")
-			sendMsg("")
-			telnetClose()			
-			state.LastCode = 235
-		}
+	def emlSubject = (Subject != null ? "${Subject}" : "")
+	def sndMsgs =[
+			"MAIL FROM: ${From}"
+			, "RCPT TO: ${To}"
+			, "DATA"
+			, "From: ${From}"
+			, "To: ${To}"
+			, "Subject: ${emlSubject}"
+			, "${state.EmailBody}"
+			, "."
+			, ""
+	]
+	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",true)) {
+		logDebug("Email message sent!")
 	}
-	
 	
 	if ( msg != state.lastMsg){
 		logDebug("setting state.lastMsg to ${msg}")
@@ -143,6 +129,26 @@ def telnetStatus(status) {
 		telnetClose()
     }	
 }
+
+boolean seqSend(int currCode, msg, msgs, dbgMsg, closeTelnet) {
+	def seqSent = false
+	if (currCode != state.LastCode) {
+		if (msg.startsWith("${currCode}")) {
+			state.LastCode = currCode
+			logDebug("${dbgMsg}")
+			msgs.each {
+				sendMsg("${it}")
+			}
+			seqSent = true
+			if (closeTelnet){
+				telnetClose()			
+			}
+		}
+	}
+	return seqSent
+}
+
+
 
 def logDebug(txt) {
     try {
