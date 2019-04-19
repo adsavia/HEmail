@@ -37,7 +37,7 @@ preferences {
 	input("From", "text", title: "From:", description: "", required: true)
 	input("To", "text", title: "To:", description: "", required: true)
 	input("Subject", "text", title: "Subject:", description: "")
-    input("debugMode", "bool", title: "Enable logging", required: true, defaultValue: true)
+	input("debugMode", "bool", title: "Enable logging", required: true, defaultValue: true)
 }
 
 metadata {
