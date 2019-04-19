@@ -26,7 +26,7 @@
 *
 *
 */
-def version() {"v0.5.0"}
+def version() {"v0.99.0"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
