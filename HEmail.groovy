@@ -8,6 +8,8 @@
 *       v0.5	2019-04-17	15:21	Eric H	Beta release, full functionality.
 *       v0.99	2019-04-19	15:21	Eric H	Created seqSend method to tighten up code a bit.
 *											, set email user name to required.
+*       v0.99.1	2019-04-19	15:21	Eric H	Modified telnet attribute to only show connect/disconnect
+*											
 *
 *  Copyright 2018 Eric Huebl
 *
