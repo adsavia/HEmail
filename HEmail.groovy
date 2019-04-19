@@ -28,7 +28,7 @@
 *
 *
 */
-def version() {"v0.99"}
+def version() {"v0.99.1"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -80,9 +80,14 @@ def deviceNotification(message) {
 	telnetConnect(EmailServer, EmailPort.toInteger(), null, null)
 }
 
-def sendMsg(String msg) {
+def sendMsg(String msg, Integer millsec) {
 	logDebug("Sending ${msg}")
-	return sendHubCommand(new hubitat.device.HubAction("${msg}", hubitat.device.Protocol.TELNET))
+	
+	def hubCmd = sendHubCommand(new hubitat.device.HubAction("${msg}", hubitat.device.Protocol.TELNET))
+
+	pauseExecution(millsec)
+	
+	return hubCmd
 }
 
 def parse(String msg) {
@@ -105,9 +110,10 @@ def parse(String msg) {
 			, "From: ${From}"
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
+			//, ""
 			, "${state.EmailBody}"
 			, "."
-			, ""
+			//, ""
 	]
 	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",true)) {
 		logDebug("Email message sent!")
@@ -142,7 +148,7 @@ boolean seqSend(int currCode, msg, msgs, dbgMsg, closeTelnet) {
 			state.LastCode = currCode
 			logDebug("${dbgMsg}")
 			msgs.each {
-				sendMsg("${it}")
+				sendMsg("${it}",250)
 			}
 			seqSent = true
 			if (closeTelnet){
