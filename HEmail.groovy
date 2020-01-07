@@ -10,7 +10,8 @@
 *											, set email user name to required.
 *       v0.99.1	2019-04-19	11:00	Eric H	Modified telnet attribute to only show connect/disconnect
 *       v0.99.2	2019-04-19	15:13	Eric H	Fixed history log, removed extra blank sends, added delay to sendMsg.
-*       v0.99.3	2020-01-07	15:55	Eric H	Added some blank sends between subject and body and end. Also removed extra telnet close from after seqsend call
+*       v0.99.3	2020-01-07	16:55	Eric H	Added some blank sends between subject and body and end. Also removed extra telnet close from after seqsend call
+*       v0.99.4	2020-01-07	17:21	Eric H	Added ability to set subject and body using json in text.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -74,10 +75,6 @@ def deviceNotification(message) {
 	state.LastCode = 0
 	logDebug("Connecting to ${EmailServer}:${EmailPort}")
 	
-	//telnetConnect([terminalType: 'VT100',termChars:[13,10]],EmailServer, EmailPort.toInteger(), null, null)
-	//telnetConnect([termChars:[10]],EmailServer, EmailPort.toInteger(), null, null)
-	//telnetConnect([termChars:[13]],EmailServer, EmailPort.toInteger(), null, null)
-	//telnetConnect([termChars:[13,10]],EmailServer, EmailPort.toInteger(), null, null)
 	telnetClose()
 	telnetConnect(EmailServer, EmailPort.toInteger(), null, null)
 }
@@ -103,8 +100,24 @@ def parse(String msg) {
 	def auth = "\u0000${EmailUser}\u0000${EmailPwd}"
 	String encoded = auth.bytes.encodeBase64().toString()
 	seqSend(250, msg, ["AUTH PLAIN ${encoded}"],"Domain Configured!",false)
-
-	def emlSubject = (Subject != null ? "${Subject}" : "")
+    
+    
+    def msgData = "${state.EmailBody}"
+	def emlBody = ""
+	def emlSubject = ""
+	
+	if(msgData.substring(0,1) == "{") {
+		// Parse out message for subject/text
+		def slurper = new groovy.json.JsonSlurper()
+		def result = slurper.parseText(msgData)
+		emlBody = result.Body
+		emlSubject = (result.Subject != null ? result.Subject : "")
+	} else {
+		emlBody = msgData
+		emlSubject = (Subject != null ? "${Subject}" : "")
+	}
+   
+    
 	def sndMsgs =[
 			"MAIL FROM: ${From}"
 			, "RCPT TO: ${To}"
@@ -113,7 +126,7 @@ def parse(String msg) {
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
             , ""
-			, "${state.EmailBody}"
+			, "${emlBody}"
             , ""
 			, "."
 			, "quit"
