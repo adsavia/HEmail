@@ -12,6 +12,7 @@
 *       v0.99.2	2019-04-19	15:13	Eric H	Fixed history log, removed extra blank sends, added delay to sendMsg.
 *       v0.99.3	2020-01-07	16:55	Eric H	Added some blank sends between subject and body and end. Also removed extra telnet close from after seqsend call
 *       v0.99.4	2020-01-07	17:21	Eric H	Added ability to set subject and body using json in text.
+*       v0.99.5	2020-01-07	17:44	Eric H	Moved call to logDebug for telnetstatus. Was showing redundant msg.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -31,7 +32,7 @@
 *
 *
 */
-def version() {"v0.99.3"}
+def version() {"v0.99.5"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -145,7 +146,6 @@ def parse(String msg) {
 }
 
 def telnetStatus(status) {
-	logDebug("telnetStatus: ${status}")
 	if (status == "receive error: Stream is closed" || status == "send error: Broken pipe (Write failed)") {
 		logDebug("Stream is closed")
 		try {
@@ -154,6 +154,8 @@ def telnetStatus(status) {
 			logDebug(e)
 		}
 		telnetClose()
+    } else {
+        logDebug("telnetStatus: ${status}")
     }
 }
 
