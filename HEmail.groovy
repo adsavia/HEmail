@@ -10,6 +10,7 @@
 *											, set email user name to required.
 *       v0.99.1	2019-04-19	11:00	Eric H	Modified telnet attribute to only show connect/disconnect
 *       v0.99.2	2019-04-19	15:13	Eric H	Fixed history log, removed extra blank sends, added delay to sendMsg.
+*       v0.99.3	2020-01-07	15:55	Eric H	Added some blank sends between subject and body and end. Also removed extra telnet close from after seqsend call
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -111,14 +112,16 @@ def parse(String msg) {
 			, "From: ${From}"
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
+            , ""
 			, "${state.EmailBody}"
+            , ""
 			, "."
 			, "quit"
 	]
 	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",true)) {
 		logDebug("Email message sent!")
 		sendEvent([name: "telnet", value: "Disconnected, email sent."])
-		telnetClose()
+		//telnetClose()
 	}
 	
 	if ( msg != state.lastMsg){
