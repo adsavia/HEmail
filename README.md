@@ -58,4 +58,7 @@ Hubitat HE hub with the custom HEmail device added to the "Drivers Code" section
 Device Notification header. If everything is working you should recieve an 
 email with your test message and parameters you defined.
 - Use device for any notifications you want!!!!!
+- 20/01/07 !!!! EXTRA functionality added - IF you supply a JSON Style string with "Subject" and "Body" then those will be used
+instead of the defined ones in preferences. This allows for a more dynamic email capability. 
+EXAMPLE: {"Subject":"Subject 1","Body":"This is the body of the email, can use HE variables here (and in the subject line) too.."}
 
