@@ -33,7 +33,10 @@ Phone provider offers an email to text email address. Note: most US providers DO
 
 ##### Notes:
 1) THIS WILL NOT WORK WITH GMAIL or other providers that require SSL/TLS!!!!!
-2) One hard coded device per contact(s).
+2) One hard coded device per set of contact(s).
+3) For the "Email User" make sure to include the domain if your mail server requires it (most do).
+   ex. "myuser@mydomain.com" - if not then it's okay to use just user login "myuser".
+4) If the "Email User" and "From User" do not match - outgoing email may get flagged by spam filtering.
 
 ##### Requirements:
 
@@ -46,11 +49,11 @@ Hubitat HE hub with the custom HEmail device added to the "Drivers Code" section
 - Add new device, select "HEmail" device. Label something like "HEmail-MyEmail" or "HEmail-MyPhone", save.
 - Fill in the required preferences
   - "Email Server"		- SMTP Server with plain authentication (SSL/TLS will NOT work)
-  - "Email Domain"		- yourdomain.com
-  - "Email User"		- youruser / youruser@yourdomain.com
-  - "Email Password"	- youruserpassword
-  - "Port #" 			- OPTIONAL, default is 25
-  - "From" 				- youruser@yourdomain.com
+  - "Email Domain"		- mydomain.com
+  - "Email User"		- myuser@mydomain.com
+  - "Email Password"	- myuserpassword 
+  - "Port #" 			- OPTIONAL, default is 25, if that doesn't work try 587, again no SSL/TLS capability unfortunately.
+  - "From" 				- myuser@yourdomain.com
   - "To" 				- somebody@tosendthisto.com
   - "Subject" 			- some subject like "HE Notification Alert".
 - Save preferences.
