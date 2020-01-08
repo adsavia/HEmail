@@ -15,6 +15,7 @@
 *       v0.99.5	2020-01-07	17:44	Eric H	Moved call to logDebug for telnetstatus. Was showing redundant msg.
 *       v0.99.6	2020-01-08	07:31	Eric H	Minor tweaks in order to resolve telnet close msgs. Changed call to seqsend with false since passing "quit". 
 *                                           Adjusted seqsend - added error handling around telnet close.
+*       v0.99.7	2020-01-08	07:55	Eric H	Additional Minor tweaks Removed extra code from telnetStatus function changed to straight debug and event call.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -34,7 +35,7 @@
 *
 *
 */
-def version() {"v0.99.6"}
+def version() {"v0.99.7"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -148,17 +149,8 @@ def parse(String msg) {
 }
 
 def telnetStatus(status) {
-	if (status == "receive error: Stream is closed" || status == "send error: Broken pipe (Write failed)") {
-		logDebug("Stream is closed")
-		try {
-        	sendEvent([name: "telnet", value: "Disconnected. ${status}"])
-		} catch(e) {
-			logDebug(e)
-		}
-		//telnetClose()
-    } else {
-        logDebug("telnetStatus: ${status}")
-    }
+    logDebug("telnetStatus: ${status}")
+    sendEvent([name: "telnet", value: "${status}"])
 }
 
 boolean seqSend(int currCode, msg, msgs, dbgMsg, closeTelnet) {
