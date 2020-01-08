@@ -13,6 +13,8 @@
 *       v0.99.3	2020-01-07	16:55	Eric H	Added some blank sends between subject and body and end. Also removed extra telnet close from after seqsend call
 *       v0.99.4	2020-01-07	17:21	Eric H	Added ability to set subject and body using json in text.
 *       v0.99.5	2020-01-07	17:44	Eric H	Moved call to logDebug for telnetstatus. Was showing redundant msg.
+*       v0.99.6	2020-01-08	07:31	Eric H	Minor tweaks in order to resolve telnet close msgs. Changed call to seqsend with false since passing "quit". 
+*                                           Adjusted seqsend - added error handling around telnet close.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -32,7 +34,7 @@
 *
 *
 */
-def version() {"v0.99.5"}
+def version() {"v0.99.6"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -132,7 +134,7 @@ def parse(String msg) {
 			, "."
 			, "quit"
 	]
-	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",true)) {
+	if (seqSend(235, msg, sndMsgs,"Authentication Successful!",false)) {
 		logDebug("Email message sent!")
 		sendEvent([name: "telnet", value: "Disconnected, email sent."])
 		//telnetClose()
@@ -153,7 +155,7 @@ def telnetStatus(status) {
 		} catch(e) {
 			logDebug(e)
 		}
-		telnetClose()
+		//telnetClose()
     } else {
         logDebug("telnetStatus: ${status}")
     }
@@ -170,7 +172,12 @@ boolean seqSend(int currCode, msg, msgs, dbgMsg, closeTelnet) {
 			}
 			seqSent = true
 			if (closeTelnet){
-				telnetClose()			
+                try {
+                    telnetClose()
+                } catch(e) {
+                    logDebug("Connection already closed, No need to close connection again.")
+                }
+                
 			}
 		}
 	}
