@@ -16,6 +16,7 @@
 *       v0.99.6	2020-01-08	07:31	Eric H	Minor tweaks in order to resolve telnet close msgs. Changed call to seqsend with false since passing "quit". 
 *                                           Adjusted seqsend - added error handling around telnet close.
 *       v0.99.7	2020-01-08	07:55	Eric H	Additional Minor tweaks Removed extra code from telnetStatus function changed to straight debug and event call.
+*       v0.99.8	2020-02-02	06:53	@ccie4526	Added date to msg header.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -35,7 +36,7 @@
 *
 *
 */
-def version() {"v0.99.7"}
+def version() {"v0.99.8"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -109,6 +110,7 @@ def parse(String msg) {
     def msgData = "${state.EmailBody}"
 	def emlBody = ""
 	def emlSubject = ""
+	def emlDateTime = new Date()
 	
 	if(msgData.substring(0,1) == "{") {
 		// Parse out message for subject/text
@@ -129,9 +131,10 @@ def parse(String msg) {
 			, "From: ${From}"
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
-            , ""
+			, "Date: ${emlDateTime}"		
+            		, ""
 			, "${emlBody}"
-            , ""
+            		, ""
 			, "."
 			, "quit"
 	]
