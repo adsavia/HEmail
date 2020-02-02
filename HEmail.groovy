@@ -16,7 +16,7 @@
 *       v0.99.6	2020-01-08	07:31	Eric H	Minor tweaks in order to resolve telnet close msgs. Changed call to seqsend with false since passing "quit". 
 *                                           Adjusted seqsend - added error handling around telnet close.
 *       v0.99.7	2020-01-08	07:55	Eric H	Additional Minor tweaks Removed extra code from telnetStatus function changed to straight debug and event call.
-*       v0.99.8	2020-02-02	06:53	@ccie4526	Added date to msg header.
+*       v0.99.8	2020-02-02	06:53	@ccie4526 & Eric H	Added date to msg header.
 *											
 *
 *  Copyright 2018 Eric Huebl
