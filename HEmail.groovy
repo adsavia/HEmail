@@ -44,7 +44,7 @@ import groovy.transform.Field
 
 @Field static java.util.concurrent.Semaphore mutex = new java.util.concurrent.Semaphore(1)
 
-def version() {"v0.99.8"}
+def version() {"v0.1.0"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
