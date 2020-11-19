@@ -17,6 +17,8 @@
 *                                           Adjusted seqsend - added error handling around telnet close.
 *       v0.99.7	2020-01-08	07:55	Eric H	Additional Minor tweaks Removed extra code from telnetStatus function changed to straight debug and event call.
 *       v0.99.8	2020-02-02	06:53	@ccie4526 & Eric H	Added date to msg header.
+*       v0.99.8	2020-11-19	11:30	Eric H	Added semaphore locking with [LockDelay] (5000 millisecond default) delay.
+
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -36,6 +38,12 @@
 *
 *
 */
+import java.util.concurrent.Semaphore
+import java.util.concurrent.TimeUnit
+import groovy.transform.Field
+
+@Field static java.util.concurrent.Semaphore mutex = new java.util.concurrent.Semaphore(1)
+
 def version() {"v0.99.8"}
 
 preferences {
@@ -47,6 +55,7 @@ preferences {
 	input("From", "text", title: "From:", description: "", required: true)
 	input("To", "text", title: "To:", description: "", required: true)
 	input("Subject", "text", title: "Subject:", description: "")
+	input("LockDelay", "integer", title: "Lock Delay (in MS):", description: "Amount of time in milliceconds required to acquire a lock for sending.", defaultValue: 5000)
 	input("debugMode", "bool", title: "Enable logging", required: true, defaultValue: true)
 }
 
@@ -85,10 +94,9 @@ def deviceNotification(message) {
 }
 
 def sendMsg(String msg, Integer millsec) {
-	logDebug("Sending ${msg}")
-	
-	def hubCmd = sendHubCommand(new hubitat.device.HubAction("${msg}", hubitat.device.Protocol.TELNET))
 
+	logDebug("Sending ${msg}")
+	def hubCmd = sendHubCommand(new hubitat.device.HubAction("${msg}", hubitat.device.Protocol.TELNET))
 	pauseExecution(millsec)
 	
 	return hubCmd
@@ -161,10 +169,20 @@ boolean seqSend(int currCode, msg, msgs, dbgMsg, closeTelnet) {
 	if (currCode != state.LastCode) {
 		if (msg.startsWith("${currCode}")) {
 			state.LastCode = currCode
-			logDebug("${dbgMsg}")
-			msgs.each {
-				sendMsg("${it}",250)
+			
+			logDebug("Acquiring semaphore.")
+			if (mutex.tryAcquire(LockDelay.toInteger(),TimeUnit.MILLISECONDS)) {
+				logDebug("${dbgMsg}")
+				msgs.each {
+					sendMsg("${it}",250)
+				}
+				mutex.release()
+				logDebug("Semaphore released.")
+			} else {
+				logDebug("Unable to acquire semaphore.")
+				logDebug("Sending message skipped.")
 			}
+
 			seqSent = true
 			if (closeTelnet){
                 try {
@@ -188,3 +206,4 @@ def logDebug(txt) {
     	log.error("logDebug unable to output requested data!")
     }
 }
+
