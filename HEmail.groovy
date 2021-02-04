@@ -18,7 +18,8 @@
 *       v0.99.7	2020-01-08	07:55	Eric H	Additional Minor tweaks Removed extra code from telnetStatus function changed to straight debug and event call.
 *       v0.99.8	2020-02-02	06:53	@ccie4526 & Eric H	Added date to msg header.
 *       v0.99.8	2020-11-19	11:30	Eric H	Added semaphore locking with [LockDelay] (5000 millisecond default) delay.
-
+*       v0.1.0	2020-??-??	??:??	Eric H	huh, did not document change to 1.0..
+*       v0.1.1	2021-02-03	20:00	Eric H	Updated code to add cr/lf's after date, body and at end. Thanks @kahn-hubitat & @PunchCardPgmr
 *											
 *
 *  Copyright 2018 Eric Huebl
