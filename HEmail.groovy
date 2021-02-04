@@ -44,7 +44,7 @@ import groovy.transform.Field
 
 @Field static java.util.concurrent.Semaphore mutex = new java.util.concurrent.Semaphore(1)
 
-def version() {"v0.1.0"}
+def version() {"v0.1.1"}
 
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
@@ -139,10 +139,9 @@ def parse(String msg) {
 			, "From: ${From}"
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
-			, "Date: ${emlDateTime}"		
-            		, ""
-			, "${emlBody}"
-            		, ""
+			, "Date: ${emlDateTime}\r\n"		
+			, "${emlBody}\r\n"
+            		, "\r\n"
 			, "."
 			, "quit"
 	]
