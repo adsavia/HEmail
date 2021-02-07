@@ -21,6 +21,7 @@
 *       v0.1.0	2020-??-??	??:??	Eric H	huh, did not document change to 1.0..
 *       v0.1.1	2021-02-03	20:00	Eric H	Updated code to add cr/lf's after date, body and at end. Thanks @kahn-hubitat & @PunchCardPgmr
 *       v0.1.2	2021-02-06	20:11	Eric H	Added bypass if email user name/pwd is blank per request from @Busthead
+*       v0.1.21	2021-02-07	05:45	Eric H	Reverted cr\lf's back to original except date field after last series of rapid HE firmware updates.
 *											
 *
 *  Copyright 2018 Eric Huebl
@@ -145,8 +146,8 @@ def parse(String msg) {
 			, "To: ${To}"
 			, "Subject: ${emlSubject}"
 			, "Date: ${emlDateTime}\r\n"		
-			, "${emlBody}\r\n"
-            		, "\r\n"
+			, "${emlBody}"
+            		, ""
 			, "."
 			, "quit"
 	]
