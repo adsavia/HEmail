@@ -20,6 +20,7 @@
 *       v0.99.8	2020-11-19	11:30	Eric H	Added semaphore locking with [LockDelay] (5000 millisecond default) delay.
 *       v0.1.0	2020-??-??	??:??	Eric H	huh, did not document change to 1.0..
 *       v0.1.1	2021-02-03	20:00	Eric H	Updated code to add cr/lf's after date, body and at end. Thanks @kahn-hubitat & @PunchCardPgmr
+*       v0.1.2	2021-02-06	20:11	Eric H	Added bypass if email user name/pwd is blank per request from @Busthead
 *											
 *
 *  Copyright 2018 Eric Huebl
