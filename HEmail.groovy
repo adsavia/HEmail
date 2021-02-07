@@ -50,8 +50,8 @@ def version() {"v0.1.1"}
 preferences {
 	input("EmailServer", "text", title: "Email Server:", description: "Enter location of email server", required: true)
 	input("EmailDomain", "text", title: "Email Domain:", description: "Enter domain (ex. domain.com)", required: true)
-	input("EmailUser", "text", title: "Email User:", description: "Enter email username", required: true)
-	input("EmailPwd", "text", title: "Email Password:", description: "Enter email password", required: true)
+	input("EmailUser", "text", title: "Email User:", description: "Enter email username", required: false)
+	input("EmailPwd", "text", title: "Email Password:", description: "Enter email password", required: false)
 	input("EmailPort", "integer", title: "Port #:", description: "Enter port number, default 25", defaultValue: 25)
 	input("From", "text", title: "From:", description: "", required: true)
 	input("To", "text", title: "To:", description: "", required: true)
@@ -111,11 +111,14 @@ def parse(String msg) {
 		sendEvent([name: "telnet", value: "Connected."])
 	}
 
-	def auth = "\u0000${EmailUser}\u0000${EmailPwd}"
-	String encoded = auth.bytes.encodeBase64().toString()
-	seqSend(250, msg, ["AUTH PLAIN ${encoded}"],"Domain Configured!",false)
-    
-    
+	if(Emailuser && EmailPwd) {
+		def auth = "\u0000${EmailUser}\u0000${EmailPwd}"
+		String encoded = auth.bytes.encodeBase64().toString()
+		seqSend(250, msg, ["AUTH PLAIN ${encoded}"],"Domain Configured!",false)
+	} else {
+		logDebug("No email user/pwd found, bypassing authentication.")
+	}
+        
     def msgData = "${state.EmailBody}"
 	def emlBody = ""
 	def emlSubject = ""
